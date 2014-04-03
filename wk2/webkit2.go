@@ -199,8 +199,8 @@ func (w *WebView) Context() *WebContext {
 	return wc
 }
 
-// LoadUri is a wrapper around webkit_web_view_load_uri().
-func (w *WebView) LoadUri(uri string) {
+// LoadURI is a wrapper around webkit_web_view_load_uri().
+func (w *WebView) LoadURI(uri string) {
 	cstr := C.CString(uri)
 	defer C.free(unsafe.Pointer(cstr))
 	C.webkit_web_view_load_uri(w.Native(), (*C.gchar)(cstr))

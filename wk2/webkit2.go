@@ -442,6 +442,21 @@ func (w *WebView) EstimatedLoadProgress() float64 {
 	return float64(c)
 }
 
+// CustomCharset is a wrapper around webkit_web_view_get_custom_charset().
+func (w *WebView) CustomCharset() string {
+	c := C.webkit_web_view_get_custom_charset(w.Native())
+	return C.GoString((*C.char)(c))
+}
+
+// TODO: BackForwardList
+// TODO: GoToBackForwardListItem
+
+// URI is a wrapper around webkit_web_view_get_uri().
+func (w *WebView) URI() string {
+	c := C.webkit_web_view_get_uri(w.Native())
+	return C.GoString((*C.char)(c))
+}
+
 //
 // WebKitWebViewGroup
 //

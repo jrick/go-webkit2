@@ -29,6 +29,8 @@ func init() {
 		{glib.Type(C.webkit_load_event_get_type()), marshalLoadEvent},
 
 		// Objects/Interfaces
+		{glib.Type(C.webkit_back_forward_list_get_type()), marshalBackForwardList},
+		{glib.Type(C.webkit_back_forward_list_item_get_type()), marshalBackForwardListItem},
 		{glib.Type(C.webkit_uri_request_get_type()), marshalURIRequest},
 		{glib.Type(C.webkit_web_context_get_type()), marshalWebContext},
 		{glib.Type(C.webkit_web_view_get_type()), marshalWebView},
@@ -71,6 +73,121 @@ func marshalLoadEvent(p uintptr) (interface{}, error) {
 }
 
 //
+// WebKitBackForwardList
+//
+
+// BackForwardList is a representation of WebKit's WebKitBackForwardList.
+type BackForwardList struct {
+	*glib.Object
+}
+
+func marshalBackForwardList(p uintptr) (interface{}, error) {
+	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	return wrapBackForwardList(obj), nil
+}
+
+func wrapBackForwardList(obj *glib.Object) *BackForwardList {
+	return &BackForwardList{obj}
+}
+
+// Native returns a pointer to the underlying WebKitBackForwardList.
+func (l *BackForwardList) Native() *C.WebKitBackForwardList {
+	if l == nil || l.GObject == nil {
+		return nil
+	}
+	p := unsafe.Pointer(l.GObject)
+	return C.toWebKitBackForwardList(p)
+}
+
+// Len is a wrapper around webkit_back_forward_list_get_length().
+func (l *BackForwardList) Len() uint {
+	c := C.webkit_back_forward_list_get_length(l.Native())
+	return uint(c)
+}
+
+// CurrentItem is a wrapper around webkit_back_forward_list_get_current_item().
+func (l *BackForwardList) CurrentItem() *BackForwardListItem {
+	c := C.webkit_back_forward_list_get_current_item(l.Native())
+	if c == nil {
+		return nil
+	}
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj.RefSink()
+	runtime.SetFinalizer(obj, (*glib.Object).Unref)
+	return wrapBackForwardListItem(obj)
+}
+
+// BackItem is a wrapper around webkit_back_forward_list_get_back_item().
+func (l *BackForwardList) BackItem() *BackForwardListItem {
+	c := C.webkit_back_forward_list_get_back_item(l.Native())
+	if c == nil {
+		return nil
+	}
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj.RefSink()
+	runtime.SetFinalizer(obj, (*glib.Object).Unref)
+	return wrapBackForwardListItem(obj)
+}
+
+// ForwardItem is a wrapper around webkit_back_forward_list_get_forward_item().
+func (l *BackForwardList) ForwardItem() *BackForwardListItem {
+	c := C.webkit_back_forward_list_get_forward_item(l.Native())
+	if c == nil {
+		return nil
+	}
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj.RefSink()
+	runtime.SetFinalizer(obj, (*glib.Object).Unref)
+	return wrapBackForwardListItem(obj)
+}
+
+// NthItem is a wrapper around webkit_back_forward_list_get_nth_item().
+func (l *BackForwardList) NthItem(n int) *BackForwardListItem {
+	c := C.webkit_back_forward_list_get_nth_item(l.Native(), C.gint(n))
+	if c == nil {
+		return nil
+	}
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj.RefSink()
+	runtime.SetFinalizer(obj, (*glib.Object).Unref)
+	return wrapBackForwardListItem(obj)
+}
+
+// TODO: BackForwardList GList methods.  These probably should be
+// returning slices, or make a wrapper data type to dereference and
+// wrap around the GList uintptr.
+
+//
+// WebKitBackForwardListItem
+//
+
+// BackForwardListItem is a representation of WebKit's
+// WebKitBackForwardListItem.
+type BackForwardListItem struct {
+	glib.InitiallyUnowned
+}
+
+func marshalBackForwardListItem(p uintptr) (interface{}, error) {
+	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	return wrapBackForwardListItem(obj), nil
+}
+
+func wrapBackForwardListItem(obj *glib.Object) *BackForwardListItem {
+	return &BackForwardListItem{glib.InitiallyUnowned{obj}}
+}
+
+// Native returns a pointer to the underlying WebKitBackForwardListItem.
+func (item *BackForwardListItem) Native() *C.WebKitBackForwardListItem {
+	if item == nil || item.GObject == nil {
+		return nil
+	}
+	p := unsafe.Pointer(item.GObject)
+	return C.toWebKitBackForwardListItem(p)
+}
+
+//
 // WebKitURIRequest
 //
 
@@ -103,6 +220,9 @@ func NewURIRequest(uri string) *URIRequest {
 	cstr := C.CString(uri)
 	defer C.free(unsafe.Pointer(cstr))
 	c := C.webkit_uri_request_new((*C.gchar)(cstr))
+	if c == nil {
+		return nil
+	}
 	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
@@ -140,6 +260,9 @@ func (w *WebContext) Native() *C.WebKitWebContext {
 // DefaultWebContext is a wrapper around webkit_web_context_get_default().
 func DefaultWebContext() *WebContext {
 	c := C.webkit_web_context_get_default()
+	if c == nil {
+		return nil
+	}
 	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
@@ -177,6 +300,9 @@ func (w *WebView) Native() *C.WebKitWebView {
 // NewWebView is a wrapper around webkit_web_view_new().
 func NewWebView() *WebView {
 	c := C.webkit_web_view_new()
+	if c == nil {
+		return nil
+	}
 	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
@@ -186,6 +312,9 @@ func NewWebView() *WebView {
 // NewWebViewWithContext is a wrapper around webkit_web_view_new_with_context().
 func NewWebViewWithContext(context *WebContext) *WebView {
 	c := C.webkit_web_view_new_with_context(context.Native())
+	if c == nil {
+		return nil
+	}
 	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
@@ -195,6 +324,9 @@ func NewWebViewWithContext(context *WebContext) *WebView {
 // NewWebViewWithGroup is a wrapper around webkit_web_view_new_with_group().
 func NewWebViewWithGroup(group *WebViewGroup) *WebView {
 	c := C.webkit_web_view_new_with_group(group.Native())
+	if c == nil {
+		return nil
+	}
 	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
@@ -204,13 +336,13 @@ func NewWebViewWithGroup(group *WebViewGroup) *WebView {
 // Context is a wrapper around webkit_web_view_get_context().
 func (w *WebView) Context() *WebContext {
 	c := C.webkit_web_view_get_context(w.Native())
-	wc := (*WebContext)(unsafe.Pointer(c))
-	// TODO: is this a good idea?
-	w.Ref()
-	runtime.SetFinalizer(wc, func(_ *WebContext) {
-		w.Unref()
-	})
-	return wc
+	if c == nil {
+		return nil
+	}
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj.RefSink()
+	runtime.SetFinalizer(obj, (*glib.Object).Unref)
+	return wrapWebContext(obj)
 }
 
 // LoadURI is a wrapper around webkit_web_view_load_uri().

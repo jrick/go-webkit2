@@ -4,6 +4,18 @@
  * license that can be found in the LICENSE file.
  */
 
+static WebKitBackForwardList *
+toWebKitBackForwardList(void *p)
+{
+	return (WEBKIT_BACK_FORWARD_LIST(p));
+}
+
+static WebKitBackForwardListItem *
+toWebKitBackForwardListItem(void *p)
+{
+	return (WEBKIT_BACK_FORWARD_LIST_ITEM(p));
+}
+
 static WebKitURIRequest *
 toWebKitURIRequest(void *p)
 {

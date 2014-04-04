@@ -37,6 +37,20 @@ func init() {
 	glib.RegisterGValueMarshalers(tm)
 }
 
+func gbool(b bool) C.gboolean {
+	if b {
+		return C.gboolean(1)
+	}
+	return C.gboolean(0)
+}
+
+func gobool(b C.gboolean) bool {
+	if b != 0 {
+		return true
+	}
+	return false
+}
+
 //
 // Constants
 //
@@ -238,6 +252,62 @@ func (w *WebView) LoadPlainText(plainText string) {
 // LoadRequest is a wrapper around webkit_web_view_load_request().
 func (w *WebView) LoadRequest(request *URIRequest) {
 	C.webkit_web_view_load_request(w.Native(), request.Native())
+}
+
+// CanGoBack is a wrapper around webkit_web_view_can_go_back().
+func (w *WebView) CanGoBack() bool {
+	c := C.webkit_web_view_can_go_back(w.Native())
+	return gobool(c)
+}
+
+// GoBack is a wrapper around webkit_web_view_go_back().
+func (w *WebView) GoBack() {
+	C.webkit_web_view_go_back(w.Native())
+}
+
+// GoForward is a wrapper around webkit_web_view_can_go_forward().
+func (w *WebView) GoForward() {
+	C.webkit_web_view_go_forward(w.Native())
+}
+
+// Title is a wrapper around webkit_web_view_get_title().
+func (w *WebView) Title() string {
+	c := C.webkit_web_view_get_title(w.Native())
+	return C.GoString((*C.char)(c))
+}
+
+// PageID is a wrapper around webkit_web_view_get_page_id().
+func (w *WebView) PageID() uint64 {
+	c := C.webkit_web_view_get_page_id(w.Native())
+	return uint64(c)
+}
+
+// Reload is a wrapper around webkit_web_view_reload().
+func (w *WebView) Reload() {
+	C.webkit_web_view_reload(w.Native())
+}
+
+// ReloadBypassCache is a wrapper around webkit_web_view_reload_bypass_cache().
+func (w *WebView) ReloadBypassCache() {
+	C.webkit_web_view_reload_bypass_cache(w.Native())
+}
+
+// StopLoading is a wrapper around webkit_web_view_stop_loading().
+func (w *WebView) StopLoading() {
+	C.webkit_web_view_stop_loading(w.Native())
+}
+
+// IsLoading is a wrapper around webkit_web_view_is_loading().
+func (w *WebView) IsLoading() bool {
+	c := C.webkit_web_view_is_loading(w.Native())
+	return gobool(c)
+}
+
+// EstimatedLoadProgress is a wrapper around
+// webkit_web_view_get_estimated_load_progress().
+func (w *WebView) EstimatedLoadProgress() float64 {
+	c := C.webkit_web_view_get_estimated_load_progress(w.Native())
+	return float64(c)
 }
 
 //

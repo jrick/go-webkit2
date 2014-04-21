@@ -11,7 +11,7 @@ package wk2
 // #include <stdlib.h>
 // #include <string.h>
 //
-// #include <webkit2.h>
+// #include <webkit2/webkit2.h>
 //
 // #include "webkit2.go.h"
 import "C"

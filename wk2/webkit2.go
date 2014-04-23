@@ -26,15 +26,25 @@ import (
 func init() {
 	tm := []glib.TypeMarshaler{
 		// Enums
+		{glib.Type(C.webkit_cache_model_get_type()), marshalCacheModel},
 		{glib.Type(C.webkit_load_event_get_type()), marshalLoadEvent},
+		{glib.Type(C.webkit_process_model_get_type()), marshalProcessModel},
+		{glib.Type(C.webkit_tls_errors_policy_get_type()), marshalTLSErrorsPolicy},
 
 		// Objects/Interfaces
 		{glib.Type(C.webkit_back_forward_list_get_type()), marshalBackForwardList},
 		{glib.Type(C.webkit_back_forward_list_item_get_type()), marshalBackForwardListItem},
+		{glib.Type(C.webkit_cookie_manager_get_type()), marshalCookieManager},
+		{glib.Type(C.webkit_download_get_type()), marshalDownload},
+		{glib.Type(C.webkit_favicon_database_get_type()), marshalFaviconDatabase},
+		{glib.Type(C.webkit_security_manager_get_type()), marshalSecurityManager},
 		{glib.Type(C.webkit_uri_request_get_type()), marshalURIRequest},
 		{glib.Type(C.webkit_web_context_get_type()), marshalWebContext},
 		{glib.Type(C.webkit_web_view_get_type()), marshalWebView},
 		{glib.Type(C.webkit_web_view_group_get_type()), marshalWebViewGroup},
+
+		// Boxed
+		{glib.Type(C.webkit_certificate_info_get_type()), marshalCertificateInfo},
 	}
 	glib.RegisterGValueMarshalers(tm)
 }
@@ -57,9 +67,26 @@ func gobool(b C.gboolean) bool {
 // Constants
 //
 
+// CacheModel is a representation of WebKit2GTK's WebKitCacheModel.
+type CacheModel int
+
+// These constants define the values determining a WebContext's cache model.
+const (
+	CacheModelDocumentViewer  CacheModel = C.WEBKIT_CACHE_MODEL_DOCUMENT_VIEWER
+	CacheModelWebBrowser      CacheModel = C.WEBKIT_CACHE_MODEL_WEB_BROWSER
+	CacheModelDocumentBrowser CacheModel = C.WEBKIT_CACHE_MODEL_DOCUMENT_BROWSER
+)
+
+func marshalCacheModel(p uintptr) (interface{}, error) {
+	c := C.g_value_get_enum((*C.GValue)(unsafe.Pointer(p)))
+	return CacheModel(c), nil
+}
+
 // LoadEvent is a representation of WebKit2GTK+'s WebKitLoadEvent.
 type LoadEvent int
 
+// These constants define the different events that happen during a
+// WebView's load operation.
 const (
 	LoadStarted    LoadEvent = C.WEBKIT_LOAD_STARTED
 	LoadRedirected LoadEvent = C.WEBKIT_LOAD_REDIRECTED
@@ -70,6 +97,34 @@ const (
 func marshalLoadEvent(p uintptr) (interface{}, error) {
 	c := C.g_value_get_enum((*C.GValue)(unsafe.Pointer(p)))
 	return LoadEvent(c), nil
+}
+
+// ProcessModel is a representation of WebKit2GTK+'s WebKitProcessModel.
+type ProcessModel int
+
+// These constants are used to determine the WebContext process model.
+const (
+	ProcessModelSharedSecondaryProcess     ProcessModel = C.WEBKIT_PROCESS_MODEL_SHARED_SECONDARY_PROCESS
+	ProcessModelMultipleSecondaryProcesses ProcessModel = C.WEBKIT_PROCESS_MODEL_MULTIPLE_SECONDARY_PROCESSES
+)
+
+func marshalProcessModel(p uintptr) (interface{}, error) {
+	c := C.g_value_get_enum((*C.GValue)(unsafe.Pointer(p)))
+	return ProcessModel(c), nil
+}
+
+// TLSErrorsPolicy is a representation of WebKit2GTK+'s WebKitTLSErrorsPolicy.
+type TLSErrorsPolicy int
+
+// These constants define the TLS errors policy.
+const (
+	TLSErrorsPolicyIgnore TLSErrorsPolicy = C.WEBKIT_TLS_ERRORS_POLICY_IGNORE
+	TLSErrorsPolicyFail   TLSErrorsPolicy = C.WEBKIT_TLS_ERRORS_POLICY_FAIL
+)
+
+func marshalTLSErrorsPolicy(p uintptr) (interface{}, error) {
+	c := C.g_value_get_enum((*C.GValue)(unsafe.Pointer(p)))
+	return TLSErrorsPolicy(c), nil
 }
 
 //
@@ -188,6 +243,158 @@ func (item *BackForwardListItem) native() *C.WebKitBackForwardListItem {
 }
 
 //
+// WebKitCertificateInfo
+//
+
+// CertificateInfo is a representation of WebKit2GTK+'s
+// WebKitCertificateInfo.
+type CertificateInfo struct {
+	info *C.WebKitCertificateInfo
+}
+
+func marshalCertificateInfo(p uintptr) (interface{}, error) {
+	c := C.g_value_get_boxed((*C.GValue)(unsafe.Pointer(p)))
+	info := (*C.WebKitCertificateInfo)(unsafe.Pointer(c))
+	wrapped := wrapCertificateInfo(info)
+	runtime.SetFinalizer(wrapped, (*CertificateInfo).free)
+	return wrapped, nil
+}
+
+func wrapCertificateInfo(info *C.WebKitCertificateInfo) *CertificateInfo {
+	return &CertificateInfo{info}
+}
+
+// native returns a pointer to the underlying WebKitCertificateInfo.
+func (i *CertificateInfo) native() *C.WebKitCertificateInfo {
+	if i == nil {
+		return nil
+	}
+	return i.info
+}
+
+// Native returns a pointer to the underlying WebKitCertificateInfo.
+func (i *CertificateInfo) Native() uintptr {
+	return uintptr(unsafe.Pointer(i.native()))
+}
+
+// free is a wrapper around webkit_certificate_info_free().
+func (i *CertificateInfo) free() {
+	C.webkit_certificate_info_free(i.native())
+}
+
+//
+// WebKitCookieManager
+//
+
+// CookieManager is a representation of WebKit2GTK+'s WebKitCookieManager.
+type CookieManager struct {
+	*glib.Object
+}
+
+func marshalCookieManager(p uintptr) (interface{}, error) {
+	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	return wrapCookieManager(obj), nil
+}
+
+func wrapCookieManager(obj *glib.Object) *CookieManager {
+	return &CookieManager{obj}
+}
+
+// native returns a pointer to the underlying WebKitCookieManager.
+func (m *CookieManager) native() *C.WebKitCookieManager {
+	if m == nil || m.GObject == nil {
+		return nil
+	}
+	p := unsafe.Pointer(m.GObject)
+	return C.toWebKitCookieManager(p)
+}
+
+//
+// WebKitDownload
+//
+
+// Download is a representation of WebKit2GTK+'s WebKitDownload.
+type Download struct {
+	*glib.Object
+}
+
+func marshalDownload(p uintptr) (interface{}, error) {
+	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	return wrapDownload(obj), nil
+}
+
+func wrapDownload(obj *glib.Object) *Download {
+	return &Download{obj}
+}
+
+// native returns a pointer to the underlying WebKitDownload.
+func (d *Download) native() *C.WebKitDownload {
+	if d == nil || d.GObject == nil {
+		return nil
+	}
+	p := unsafe.Pointer(d.GObject)
+	return C.toWebKitDownload(p)
+}
+
+//
+// WebKitFaviconDatabase
+//
+
+// FaviconDatabase is a representation of WebKit2GTK+'s WebKitFaviconDatabase.
+type FaviconDatabase struct {
+	*glib.Object
+}
+
+func marshalFaviconDatabase(p uintptr) (interface{}, error) {
+	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	return wrapFaviconDatabase(obj), nil
+}
+
+func wrapFaviconDatabase(obj *glib.Object) *FaviconDatabase {
+	return &FaviconDatabase{obj}
+}
+
+// native returns a pointer to the underlying WebKitFaviconDatabase.
+func (d *FaviconDatabase) native() *C.WebKitFaviconDatabase {
+	if d == nil || d.GObject == nil {
+		return nil
+	}
+	p := unsafe.Pointer(d.GObject)
+	return C.toWebKitFaviconDatabase(p)
+}
+
+//
+// WebKitSecurityManager
+//
+
+// SecurityManager is a representation of WebKit2GTK+'s WebKitSecurityManager.
+type SecurityManager struct {
+	*glib.Object
+}
+
+func marshalSecurityManager(p uintptr) (interface{}, error) {
+	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	return wrapSecurityManager(obj), nil
+}
+
+func wrapSecurityManager(obj *glib.Object) *SecurityManager {
+	return &SecurityManager{obj}
+}
+
+// native returns a pointer to the underlying WebKitSecurityManager.
+func (s *SecurityManager) native() *C.WebKitSecurityManager {
+	if s == nil || s.GObject == nil {
+		return nil
+	}
+	p := unsafe.Pointer(s.GObject)
+	return C.toWebKitSecurityManager(p)
+}
+
+//
 // WebKitURIRequest
 //
 
@@ -268,6 +475,216 @@ func DefaultWebContext() *WebContext {
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapWebContext(obj)
 }
+
+// CacheModel is a wrapper around webkit_web_context_get_cache_model().
+func (w *WebContext) CacheModel() CacheModel {
+	c := C.webkit_web_context_get_cache_model(w.native())
+	return CacheModel(c)
+}
+
+// SetCacheModel is a wrapper around webkit_web_context_set_cache_model().
+func (w *WebContext) SetCacheModel(cm CacheModel) {
+	C.webkit_web_context_set_cache_model(w.native(), C.WebKitCacheModel(cm))
+}
+
+// ClearCache is a wrapper around webkit_web_context_clear_cache().
+func (w *WebContext) ClearCache() {
+	C.webkit_web_context_clear_cache(w.native())
+}
+
+// DownloadURI is a wrapper around webkit_web_context_download_uri().
+func (w *WebContext) DownloadURI(uri string) *Download {
+	cstr := C.CString(uri)
+	defer C.free(unsafe.Pointer(cstr))
+	c := C.webkit_web_context_download_uri(w.native(), (*C.gchar)(cstr))
+	if c == nil {
+		return nil
+	}
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj.RefSink()
+	runtime.SetFinalizer(obj, (*glib.Object).Unref)
+	return wrapDownload(obj)
+}
+
+// CookieManager is a wrapper around webkit_web_context_get_cookie_manager().
+func (w *WebContext) CookieManager() *CookieManager {
+	c := C.webkit_web_context_get_cookie_manager(w.native())
+	if c == nil {
+		return nil
+	}
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj.RefSink()
+	runtime.SetFinalizer(obj, (*glib.Object).Unref)
+	return wrapCookieManager(obj)
+}
+
+// FaviconDatabase is a wrapper around webkit_web_context_get_favicon_database().
+func (w *WebContext) FaviconDatabase() *FaviconDatabase {
+	c := C.webkit_web_context_get_favicon_database(w.native())
+	if c == nil {
+		return nil
+	}
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj.RefSink()
+	runtime.SetFinalizer(obj, (*glib.Object).Unref)
+	return wrapFaviconDatabase(obj)
+}
+
+// SetFaviconDatabaseDirectory is a wrapper around
+// webkit_web_context_set_favicon_database_directory().
+func (w *WebContext) SetFaviconDatabaseDirectory(dir string) {
+	cstr := C.CString(dir)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_set_favicon_database_directory(w.native(),
+		(*C.gchar)(cstr))
+}
+
+// FaviconDatabaseDirectory is a wrapper around
+// webkit_web_context_get_favicon_database_directory().
+func (w *WebContext) FaviconDatabaseDirectory() string {
+	c := C.webkit_web_context_get_favicon_database_directory(w.native())
+	return C.GoString((*C.char)(c))
+}
+
+// SecurityManager is a wrapper around webkit_web_context_get_security_manager().
+func (w *WebContext) SecurityManager() *SecurityManager {
+	c := C.webkit_web_context_get_security_manager(w.native())
+	if c == nil {
+		return nil
+	}
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj.RefSink()
+	runtime.SetFinalizer(obj, (*glib.Object).Unref)
+	return wrapSecurityManager(obj)
+}
+
+// SetAdditionalPluginsDirectory is a wrapper around
+// webkit_web_context_set_additional_plugins_directory().
+func (w *WebContext) SetAdditionalPluginsDirectory(dir string) {
+	cstr := C.CString(dir)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_set_additional_plugins_directory(w.native(),
+		(*C.gchar)(cstr))
+}
+
+// TODO: webkit_web_context_get_plugins
+// TODO: webkit_web_context_get_plugins_finish
+
+// SpellCheckingEnabled is a wrapper around
+// webkit_web_context_get_spell_checking_enabled().
+func (w *WebContext) SpellCheckingEnabled() bool {
+	c := C.webkit_web_context_get_spell_checking_enabled(w.native())
+	return gobool(c)
+}
+
+// SetSpellCheckingEnabled is a wrapper around
+// webkit_web_context_set_spell_checking_enabled().
+func (w *WebContext) SetSpellCheckingEnabled(enabled bool) {
+	C.webkit_web_context_set_spell_checking_enabled(w.native(), gbool(enabled))
+}
+
+// SpellCheckingLanguages is a wrapper around
+// webkit_web_context_get_spell_checking_languages().
+func (w *WebContext) SpellCheckingLanguages() []string {
+	c := C.webkit_web_context_get_spell_checking_languages(w.native())
+	if c == nil {
+		return nil
+	}
+
+	var languages []string
+	for i := 0; C.indexGCharArray(c, C.int(i)) != nil; i++ {
+		cstr := C.indexGCharArray(c, C.int(i))
+		languages = append(languages, C.GoString((*C.char)(cstr)))
+	}
+	return languages
+}
+
+// SetSpellCheckingLanguages is a wrapper around
+// webkit_web_context_set_spell_checking_languages().
+func (w *WebContext) SetSpellCheckingLanguages(languages []string) {
+	cLanguages := C.allocGCharArray((C.size_t)(len(languages)))
+	for i, s := range languages {
+		cstr := C.CString(s)
+		C.indexGCharArraySet(cLanguages, C.int(i), (*C.gchar)(cstr))
+	}
+	defer C.freeGCharArray(cLanguages)
+
+	C.webkit_web_context_set_spell_checking_languages(w.native(), cLanguages)
+}
+
+// SetPreferredLanguages is a wrapper around
+// webkit_web_context_set_preferred_languages().
+func (w *WebContext) SetPreferredLanguages(languages []string) {
+	cLanguages := C.allocGCharArray((C.size_t)(len(languages)))
+	for i, s := range languages {
+		cstr := C.CString(s)
+		C.indexGCharArraySet(cLanguages, C.int(i), (*C.gchar)(cstr))
+	}
+	defer C.freeGCharArray(cLanguages)
+
+	C.webkit_web_context_set_preferred_languages(w.native(), cLanguages)
+}
+
+// SetTLSErrorsPolicy is a wrapper around webkit_web_context_set_tls_errors_policy().
+func (w *WebContext) SetTLSErrorsPolicy(policy TLSErrorsPolicy) {
+	C.webkit_web_context_set_tls_errors_policy(w.native(),
+		C.WebKitTLSErrorsPolicy(policy))
+}
+
+// TLSErrorsPolicy is a wrapper around webkit_web_context_get_tls_errors_policy().
+func (w *WebContext) TLSErrorsPolicy() TLSErrorsPolicy {
+	c := C.webkit_web_context_get_tls_errors_policy(w.native())
+	return TLSErrorsPolicy(c)
+}
+
+// SetWebExtensionsDirectory is a wrapper around
+// webkit_web_context_set_web_extensions_directory().
+func (w *WebContext) SetWebExtensionsDirectory(dir string) {
+	cstr := C.CString(dir)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_set_web_extensions_directory(w.native(),
+		(*C.gchar)(cstr))
+}
+
+// TODO: webkit_web_context_set_web_extensions_initialization_user_data
+
+// PrefetchDNS is a wrapper around webkit_web_context_prefetch_dns().
+func (w *WebContext) PrefetchDNS(hostname string) {
+	cstr := C.CString(hostname)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_prefetch_dns(w.native(), (*C.gchar)(cstr))
+}
+
+// SetDiskCacheDirectory is a wrapper around
+// webkit_web_context_set_disk_cache_directory().
+func (w *WebContext) SetDiskCacheDirectory(dir string) {
+	cstr := C.CString(dir)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_set_disk_cache_directory(w.native(), (*C.gchar)(cstr))
+}
+
+// AllowTLSCertificateForHost is a wrapper around
+// webkit_web_context_allow_tls_certificate_for_host().
+func (w *WebContext) AllowTLSCertificateForHost(info *CertificateInfo, host string) {
+	cstr := C.CString(host)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_allow_tls_certificate_for_host(w.native(),
+		info.native(), (*C.gchar)(cstr))
+}
+
+// ProcessModel is a wrapper around webkit_web_context_get_process_model().
+func (w *WebContext) ProcessModel() ProcessModel {
+	c := C.webkit_web_context_get_process_model(w.native())
+	return ProcessModel(c)
+}
+
+// SetProcessModel is a wrapper around webkit_web_context_set_process_model().
+func (w *WebContext) SetProcessModel(model ProcessModel) {
+	C.webkit_web_context_set_process_model(w.native(),
+		C.WebKitProcessModel(model))
+}
+
+// TODO: webkit_web_context_register_uri_scheme
 
 //
 // WebKitWebView

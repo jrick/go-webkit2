@@ -138,7 +138,7 @@ type BackForwardList struct {
 
 func marshalBackForwardList(p uintptr) (interface{}, error) {
 	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	return wrapBackForwardList(obj), nil
 }
 
@@ -167,7 +167,7 @@ func (l *BackForwardList) CurrentItem() *BackForwardListItem {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapBackForwardListItem(obj)
@@ -179,7 +179,7 @@ func (l *BackForwardList) BackItem() *BackForwardListItem {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapBackForwardListItem(obj)
@@ -191,7 +191,7 @@ func (l *BackForwardList) ForwardItem() *BackForwardListItem {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapBackForwardListItem(obj)
@@ -203,7 +203,7 @@ func (l *BackForwardList) NthItem(n int) *BackForwardListItem {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapBackForwardListItem(obj)
@@ -225,12 +225,12 @@ type BackForwardListItem struct {
 
 func marshalBackForwardListItem(p uintptr) (interface{}, error) {
 	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	return wrapBackForwardListItem(obj), nil
 }
 
 func wrapBackForwardListItem(obj *glib.Object) *BackForwardListItem {
-	return &BackForwardListItem{glib.InitiallyUnowned{obj}}
+	return &BackForwardListItem{glib.InitiallyUnowned{Object: obj}}
 }
 
 // native returns a pointer to the underlying WebKitBackForwardListItem.
@@ -293,7 +293,7 @@ type CookieManager struct {
 
 func marshalCookieManager(p uintptr) (interface{}, error) {
 	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	return wrapCookieManager(obj), nil
 }
 
@@ -321,7 +321,7 @@ type Download struct {
 
 func marshalDownload(p uintptr) (interface{}, error) {
 	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	return wrapDownload(obj), nil
 }
 
@@ -349,12 +349,12 @@ type FaviconDatabase struct {
 
 func marshalFaviconDatabase(p uintptr) (interface{}, error) {
 	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	return wrapFaviconDatabase(obj), nil
 }
 
 func wrapFaviconDatabase(obj *glib.Object) *FaviconDatabase {
-	return &FaviconDatabase{obj}
+	return &FaviconDatabase{Object: obj}
 }
 
 // native returns a pointer to the underlying WebKitFaviconDatabase.
@@ -377,7 +377,7 @@ type SecurityManager struct {
 
 func marshalSecurityManager(p uintptr) (interface{}, error) {
 	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	return wrapSecurityManager(obj), nil
 }
 
@@ -405,7 +405,7 @@ type URIRequest struct {
 
 func marshalURIRequest(p uintptr) (interface{}, error) {
 	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	return wrapURIRequest(obj), nil
 }
 
@@ -430,7 +430,7 @@ func NewURIRequest(uri string) *URIRequest {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapURIRequest(obj)
@@ -447,7 +447,7 @@ type WebContext struct {
 
 func marshalWebContext(p uintptr) (interface{}, error) {
 	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	return wrapWebContext(obj), nil
 }
 
@@ -470,7 +470,7 @@ func DefaultWebContext() *WebContext {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapWebContext(obj)
@@ -500,7 +500,7 @@ func (w *WebContext) DownloadURI(uri string) *Download {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapDownload(obj)
@@ -512,7 +512,7 @@ func (w *WebContext) CookieManager() *CookieManager {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapCookieManager(obj)
@@ -524,7 +524,7 @@ func (w *WebContext) FaviconDatabase() *FaviconDatabase {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapFaviconDatabase(obj)
@@ -552,7 +552,7 @@ func (w *WebContext) SecurityManager() *SecurityManager {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapSecurityManager(obj)
@@ -697,12 +697,12 @@ type WebView struct {
 
 func marshalWebView(p uintptr) (interface{}, error) {
 	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	return wrapWebView(obj), nil
 }
 
 func wrapWebView(obj *glib.Object) *WebView {
-	return &WebView{gtk.Widget{glib.InitiallyUnowned{obj}}}
+	return &WebView{gtk.Widget{InitiallyUnowned: glib.InitiallyUnowned{Object: obj}}}
 }
 
 // native returns a pointer to the underlying WebKitWebView.
@@ -720,7 +720,7 @@ func NewWebView() *WebView {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapWebView(obj)
@@ -732,7 +732,7 @@ func NewWebViewWithContext(context *WebContext) *WebView {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapWebView(obj)
@@ -744,7 +744,7 @@ func NewWebViewWithGroup(group *WebViewGroup) *WebView {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapWebView(obj)
@@ -756,7 +756,7 @@ func (w *WebView) Context() *WebContext {
 	if c == nil {
 		return nil
 	}
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	obj.RefSink()
 	runtime.SetFinalizer(obj, (*glib.Object).Unref)
 	return wrapWebContext(obj)
@@ -885,7 +885,7 @@ type WebViewGroup struct {
 
 func marshalWebViewGroup(p uintptr) (interface{}, error) {
 	c := C.g_value_get_object((*C.GValue)(unsafe.Pointer(p)))
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(c))}
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
 	return wrapWebViewGroup(obj), nil
 }
 

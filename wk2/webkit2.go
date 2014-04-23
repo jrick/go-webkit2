@@ -91,8 +91,8 @@ func wrapBackForwardList(obj *glib.Object) *BackForwardList {
 	return &BackForwardList{obj}
 }
 
-// Native returns a pointer to the underlying WebKitBackForwardList.
-func (l *BackForwardList) Native() *C.WebKitBackForwardList {
+// native returns a pointer to the underlying WebKitBackForwardList.
+func (l *BackForwardList) native() *C.WebKitBackForwardList {
 	if l == nil || l.GObject == nil {
 		return nil
 	}
@@ -102,13 +102,13 @@ func (l *BackForwardList) Native() *C.WebKitBackForwardList {
 
 // Len is a wrapper around webkit_back_forward_list_get_length().
 func (l *BackForwardList) Len() uint {
-	c := C.webkit_back_forward_list_get_length(l.Native())
+	c := C.webkit_back_forward_list_get_length(l.native())
 	return uint(c)
 }
 
 // CurrentItem is a wrapper around webkit_back_forward_list_get_current_item().
 func (l *BackForwardList) CurrentItem() *BackForwardListItem {
-	c := C.webkit_back_forward_list_get_current_item(l.Native())
+	c := C.webkit_back_forward_list_get_current_item(l.native())
 	if c == nil {
 		return nil
 	}
@@ -120,7 +120,7 @@ func (l *BackForwardList) CurrentItem() *BackForwardListItem {
 
 // BackItem is a wrapper around webkit_back_forward_list_get_back_item().
 func (l *BackForwardList) BackItem() *BackForwardListItem {
-	c := C.webkit_back_forward_list_get_back_item(l.Native())
+	c := C.webkit_back_forward_list_get_back_item(l.native())
 	if c == nil {
 		return nil
 	}
@@ -132,7 +132,7 @@ func (l *BackForwardList) BackItem() *BackForwardListItem {
 
 // ForwardItem is a wrapper around webkit_back_forward_list_get_forward_item().
 func (l *BackForwardList) ForwardItem() *BackForwardListItem {
-	c := C.webkit_back_forward_list_get_forward_item(l.Native())
+	c := C.webkit_back_forward_list_get_forward_item(l.native())
 	if c == nil {
 		return nil
 	}
@@ -144,7 +144,7 @@ func (l *BackForwardList) ForwardItem() *BackForwardListItem {
 
 // NthItem is a wrapper around webkit_back_forward_list_get_nth_item().
 func (l *BackForwardList) NthItem(n int) *BackForwardListItem {
-	c := C.webkit_back_forward_list_get_nth_item(l.Native(), C.gint(n))
+	c := C.webkit_back_forward_list_get_nth_item(l.native(), C.gint(n))
 	if c == nil {
 		return nil
 	}
@@ -178,8 +178,8 @@ func wrapBackForwardListItem(obj *glib.Object) *BackForwardListItem {
 	return &BackForwardListItem{glib.InitiallyUnowned{obj}}
 }
 
-// Native returns a pointer to the underlying WebKitBackForwardListItem.
-func (item *BackForwardListItem) Native() *C.WebKitBackForwardListItem {
+// native returns a pointer to the underlying WebKitBackForwardListItem.
+func (item *BackForwardListItem) native() *C.WebKitBackForwardListItem {
 	if item == nil || item.GObject == nil {
 		return nil
 	}
@@ -206,8 +206,8 @@ func wrapURIRequest(obj *glib.Object) *URIRequest {
 	return &URIRequest{obj}
 }
 
-// Native returns a pointer to the underlying WebKitURIRequest.
-func (r *URIRequest) Native() *C.WebKitURIRequest {
+// native returns a pointer to the underlying WebKitURIRequest.
+func (r *URIRequest) native() *C.WebKitURIRequest {
 	if r == nil || r.GObject == nil {
 		return nil
 	}
@@ -248,8 +248,8 @@ func wrapWebContext(obj *glib.Object) *WebContext {
 	return &WebContext{obj}
 }
 
-// Native returns a pointer to the underlying WebKitWebContext.
-func (w *WebContext) Native() *C.WebKitWebContext {
+// native returns a pointer to the underlying WebKitWebContext.
+func (w *WebContext) native() *C.WebKitWebContext {
 	if w == nil || w.GObject == nil {
 		return nil
 	}
@@ -288,8 +288,8 @@ func wrapWebView(obj *glib.Object) *WebView {
 	return &WebView{gtk.Widget{glib.InitiallyUnowned{obj}}}
 }
 
-// Native returns a pointer to the underlying WebKitWebView.
-func (w *WebView) Native() *C.WebKitWebView {
+// native returns a pointer to the underlying WebKitWebView.
+func (w *WebView) native() *C.WebKitWebView {
 	if w == nil || w.GObject == nil {
 		return nil
 	}
@@ -311,7 +311,7 @@ func NewWebView() *WebView {
 
 // NewWebViewWithContext is a wrapper around webkit_web_view_new_with_context().
 func NewWebViewWithContext(context *WebContext) *WebView {
-	c := C.webkit_web_view_new_with_context(context.Native())
+	c := C.webkit_web_view_new_with_context(context.native())
 	if c == nil {
 		return nil
 	}
@@ -323,7 +323,7 @@ func NewWebViewWithContext(context *WebContext) *WebView {
 
 // NewWebViewWithGroup is a wrapper around webkit_web_view_new_with_group().
 func NewWebViewWithGroup(group *WebViewGroup) *WebView {
-	c := C.webkit_web_view_new_with_group(group.Native())
+	c := C.webkit_web_view_new_with_group(group.native())
 	if c == nil {
 		return nil
 	}
@@ -335,7 +335,7 @@ func NewWebViewWithGroup(group *WebViewGroup) *WebView {
 
 // Context is a wrapper around webkit_web_view_get_context().
 func (w *WebView) Context() *WebContext {
-	c := C.webkit_web_view_get_context(w.Native())
+	c := C.webkit_web_view_get_context(w.native())
 	if c == nil {
 		return nil
 	}
@@ -349,7 +349,7 @@ func (w *WebView) Context() *WebContext {
 func (w *WebView) LoadURI(uri string) {
 	cstr := C.CString(uri)
 	defer C.free(unsafe.Pointer(cstr))
-	C.webkit_web_view_load_uri(w.Native(), (*C.gchar)(cstr))
+	C.webkit_web_view_load_uri(w.native(), (*C.gchar)(cstr))
 }
 
 // LoadHTML is a wrapper around webkit_web_view_load_html().
@@ -358,7 +358,7 @@ func (w *WebView) LoadHTML(content, baseURI string) {
 	cBaseURI := C.CString(baseURI)
 	defer C.free(unsafe.Pointer(cContent))
 	defer C.free(unsafe.Pointer(cBaseURI))
-	C.webkit_web_view_load_html(w.Native(), (*C.gchar)(cContent),
+	C.webkit_web_view_load_html(w.native(), (*C.gchar)(cContent),
 		(*C.gchar)(cBaseURI))
 }
 
@@ -370,7 +370,7 @@ func (w *WebView) LoadAlternateHTML(content, contentURI, baseURI string) {
 	defer C.free(unsafe.Pointer(cContent))
 	defer C.free(unsafe.Pointer(cContentURI))
 	defer C.free(unsafe.Pointer(cBaseURI))
-	C.webkit_web_view_load_alternate_html(w.Native(), (*C.gchar)(cContent),
+	C.webkit_web_view_load_alternate_html(w.native(), (*C.gchar)(cContent),
 		(*C.gchar)(cContentURI), (*C.gchar)(cBaseURI))
 }
 
@@ -378,73 +378,73 @@ func (w *WebView) LoadAlternateHTML(content, contentURI, baseURI string) {
 func (w *WebView) LoadPlainText(plainText string) {
 	cstr := C.CString(plainText)
 	defer C.free(unsafe.Pointer(cstr))
-	C.webkit_web_view_load_plain_text(w.Native(), (*C.gchar)(cstr))
+	C.webkit_web_view_load_plain_text(w.native(), (*C.gchar)(cstr))
 }
 
 // LoadRequest is a wrapper around webkit_web_view_load_request().
 func (w *WebView) LoadRequest(request *URIRequest) {
-	C.webkit_web_view_load_request(w.Native(), request.Native())
+	C.webkit_web_view_load_request(w.native(), request.native())
 }
 
 // CanGoBack is a wrapper around webkit_web_view_can_go_back().
 func (w *WebView) CanGoBack() bool {
-	c := C.webkit_web_view_can_go_back(w.Native())
+	c := C.webkit_web_view_can_go_back(w.native())
 	return gobool(c)
 }
 
 // GoBack is a wrapper around webkit_web_view_go_back().
 func (w *WebView) GoBack() {
-	C.webkit_web_view_go_back(w.Native())
+	C.webkit_web_view_go_back(w.native())
 }
 
 // GoForward is a wrapper around webkit_web_view_can_go_forward().
 func (w *WebView) GoForward() {
-	C.webkit_web_view_go_forward(w.Native())
+	C.webkit_web_view_go_forward(w.native())
 }
 
 // Title is a wrapper around webkit_web_view_get_title().
 func (w *WebView) Title() string {
-	c := C.webkit_web_view_get_title(w.Native())
+	c := C.webkit_web_view_get_title(w.native())
 	return C.GoString((*C.char)(c))
 }
 
 // PageID is a wrapper around webkit_web_view_get_page_id().
 func (w *WebView) PageID() uint64 {
-	c := C.webkit_web_view_get_page_id(w.Native())
+	c := C.webkit_web_view_get_page_id(w.native())
 	return uint64(c)
 }
 
 // Reload is a wrapper around webkit_web_view_reload().
 func (w *WebView) Reload() {
-	C.webkit_web_view_reload(w.Native())
+	C.webkit_web_view_reload(w.native())
 }
 
 // ReloadBypassCache is a wrapper around webkit_web_view_reload_bypass_cache().
 func (w *WebView) ReloadBypassCache() {
-	C.webkit_web_view_reload_bypass_cache(w.Native())
+	C.webkit_web_view_reload_bypass_cache(w.native())
 }
 
 // StopLoading is a wrapper around webkit_web_view_stop_loading().
 func (w *WebView) StopLoading() {
-	C.webkit_web_view_stop_loading(w.Native())
+	C.webkit_web_view_stop_loading(w.native())
 }
 
 // IsLoading is a wrapper around webkit_web_view_is_loading().
 func (w *WebView) IsLoading() bool {
-	c := C.webkit_web_view_is_loading(w.Native())
+	c := C.webkit_web_view_is_loading(w.native())
 	return gobool(c)
 }
 
 // EstimatedLoadProgress is a wrapper around
 // webkit_web_view_get_estimated_load_progress().
 func (w *WebView) EstimatedLoadProgress() float64 {
-	c := C.webkit_web_view_get_estimated_load_progress(w.Native())
+	c := C.webkit_web_view_get_estimated_load_progress(w.native())
 	return float64(c)
 }
 
 // CustomCharset is a wrapper around webkit_web_view_get_custom_charset().
 func (w *WebView) CustomCharset() string {
-	c := C.webkit_web_view_get_custom_charset(w.Native())
+	c := C.webkit_web_view_get_custom_charset(w.native())
 	return C.GoString((*C.char)(c))
 }
 
@@ -453,7 +453,7 @@ func (w *WebView) CustomCharset() string {
 
 // URI is a wrapper around webkit_web_view_get_uri().
 func (w *WebView) URI() string {
-	c := C.webkit_web_view_get_uri(w.Native())
+	c := C.webkit_web_view_get_uri(w.native())
 	return C.GoString((*C.char)(c))
 }
 
@@ -476,8 +476,8 @@ func wrapWebViewGroup(obj *glib.Object) *WebViewGroup {
 	return &WebViewGroup{obj}
 }
 
-// Native returns a pointer to the underlying WebKitWebViewGroup.
-func (w *WebViewGroup) Native() *C.WebKitWebViewGroup {
+// native returns a pointer to the underlying WebKitWebViewGroup.
+func (w *WebViewGroup) native() *C.WebKitWebViewGroup {
 	if w == nil || w.GObject == nil {
 		return nil
 	}

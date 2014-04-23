@@ -2,7 +2,7 @@
 // Use of this source code is governed by an ISC
 // license that can be found in the LICENSE file.
 
-// Package wk2 provides webkitgtk2 bindings for Go.
+// Package wk2 provides WebKit2GTK+ bindings for Go.
 package wk2
 
 // #cgo pkg-config: webkit2gtk-3.0
@@ -57,7 +57,7 @@ func gobool(b C.gboolean) bool {
 // Constants
 //
 
-// LoadEvent is a representation of WebKit's WebKitLoadEvent.
+// LoadEvent is a representation of WebKit2GTK+'s WebKitLoadEvent.
 type LoadEvent int
 
 const (
@@ -76,7 +76,7 @@ func marshalLoadEvent(p uintptr) (interface{}, error) {
 // WebKitBackForwardList
 //
 
-// BackForwardList is a representation of WebKit's WebKitBackForwardList.
+// BackForwardList is a representation of WebKit2GTK+'s WebKitBackForwardList.
 type BackForwardList struct {
 	*glib.Object
 }
@@ -162,7 +162,7 @@ func (l *BackForwardList) NthItem(n int) *BackForwardListItem {
 // WebKitBackForwardListItem
 //
 
-// BackForwardListItem is a representation of WebKit's
+// BackForwardListItem is a representation of WebKit2GTK+'s
 // WebKitBackForwardListItem.
 type BackForwardListItem struct {
 	glib.InitiallyUnowned
@@ -191,7 +191,7 @@ func (item *BackForwardListItem) Native() *C.WebKitBackForwardListItem {
 // WebKitURIRequest
 //
 
-// URIRequest is a representation of WebKit's WebKitURIRequest.
+// URIRequest is a representation of WebKit2GTK+'s WebKitURIRequest.
 type URIRequest struct {
 	*glib.Object
 }
@@ -233,7 +233,7 @@ func NewURIRequest(uri string) *URIRequest {
 // WebKitWebContext
 //
 
-// WebContext is a representation of WebKit's WebKitWebContext.
+// WebContext is a representation of WebKit2GTK+'s WebKitWebContext.
 type WebContext struct {
 	*glib.Object
 }
@@ -273,7 +273,7 @@ func DefaultWebContext() *WebContext {
 // WebKitWebView
 //
 
-// WebView is a representation of WebKit's WebKitWebView.
+// WebView is a representation of WebKit2GTK+'s WebKitWebView.
 type WebView struct {
 	gtk.Widget
 }
@@ -461,7 +461,7 @@ func (w *WebView) URI() string {
 // WebKitWebViewGroup
 //
 
-// WebViewGroup is a representation of WebKit's WebKitWebViewGroup.
+// WebViewGroup is a representation of WebKit2GTK+'s WebKitWebViewGroup.
 type WebViewGroup struct {
 	*glib.Object
 }

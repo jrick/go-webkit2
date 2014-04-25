@@ -13,7 +13,7 @@ allocGCharArray(size_t n)
 	return (v);
 }
 
-void
+static void
 freeGCharArray(gchar **v)
 {
 	int		i;

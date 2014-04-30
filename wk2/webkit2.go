@@ -814,6 +814,12 @@ func (w *WebView) GoBack() {
 	C.webkit_web_view_go_back(w.native())
 }
 
+// CanGoForward is a wrapper around webkit_web_view_can_go_forward().
+func (w *WebView) CanGoForward() bool {
+	c := C.webkit_web_view_can_go_forward(w.native())
+	return gobool(c)
+}
+
 // GoForward is a wrapper around webkit_web_view_can_go_forward().
 func (w *WebView) GoForward() {
 	C.webkit_web_view_go_forward(w.native())

@@ -29,13 +29,13 @@ freeGCharArray(gchar **v)
 }
 
 static gchar *
-indexGCharArray(gchar **v, int n)
+peekGCharArray(gchar **v, int n)
 {
 	return (v[n]);
 }
 
 static void
-indexGCharArraySet(gchar **v, int n, gchar *s)
+pokeGCharArray(gchar **v, int n, gchar *s)
 {
 	v[n] = s;
 }

@@ -592,8 +592,8 @@ func (w *WebContext) SpellCheckingLanguages() []string {
 	}
 
 	var languages []string
-	for i := 0; C.indexGCharArray(c, C.int(i)) != nil; i++ {
-		cstr := C.indexGCharArray(c, C.int(i))
+	for i := 0; C.peekGCharArray(c, C.int(i)) != nil; i++ {
+		cstr := C.peekGCharArray(c, C.int(i))
 		languages = append(languages, C.GoString((*C.char)(cstr)))
 	}
 	return languages
@@ -605,7 +605,7 @@ func (w *WebContext) SetSpellCheckingLanguages(languages []string) {
 	cLanguages := C.allocGCharArray((C.size_t)(len(languages)))
 	for i, s := range languages {
 		cstr := C.CString(s)
-		C.indexGCharArraySet(cLanguages, C.int(i), (*C.gchar)(cstr))
+		C.pokeGCharArray(cLanguages, C.int(i), (*C.gchar)(cstr))
 	}
 	defer C.freeGCharArray(cLanguages)
 
@@ -618,7 +618,7 @@ func (w *WebContext) SetPreferredLanguages(languages []string) {
 	cLanguages := C.allocGCharArray((C.size_t)(len(languages)))
 	for i, s := range languages {
 		cstr := C.CString(s)
-		C.indexGCharArraySet(cLanguages, C.int(i), (*C.gchar)(cstr))
+		C.pokeGCharArray(cLanguages, C.int(i), (*C.gchar)(cstr))
 	}
 	defer C.freeGCharArray(cLanguages)
 

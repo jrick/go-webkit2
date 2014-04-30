@@ -865,8 +865,20 @@ func (w *WebView) CustomCharset() string {
 	return C.GoString((*C.char)(c))
 }
 
-// TODO: BackForwardList
-// TODO: GoToBackForwardListItem
+// BackForwardList is a wrapper around webkit_web_view_get_back_forward_list().
+func (w *WebView) BackForwardList() *BackForwardList {
+	c := C.webkit_web_view_get_back_forward_list(w.native())
+	obj := &glib.Object{GObject: glib.ToGObject(unsafe.Pointer(c))}
+	obj.RefSink()
+	runtime.SetFinalizer(obj, (*glib.Object).Unref)
+	return wrapBackForwardList(obj)
+}
+
+// GoToBackForwardListItem is a wrapper around
+// webkit_web_view_go_to_back_forward_list_item().
+func (w *WebView) GoToBackForwardListItem(listItem *BackForwardListItem) {
+	C.webkit_web_view_go_to_back_forward_list_item(w.native(), listItem.native())
+}
 
 // URI is a wrapper around webkit_web_view_get_uri().
 func (w *WebView) URI() string {

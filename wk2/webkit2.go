@@ -57,10 +57,7 @@ func gbool(b bool) C.gboolean {
 }
 
 func gobool(b C.gboolean) bool {
-	if b != 0 {
-		return true
-	}
-	return false
+	return b != 0
 }
 
 //
